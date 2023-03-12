@@ -1,28 +1,40 @@
-import { useState, useEffect } from "react";
-
-import "./App.css";
+import { useReducer } from "react";
 
 const App = () => {
-  const [users, setUsers] = useState([]);
+  const initialState = { count: 0 };
 
-  useEffect(() => {
-    const getUsers = () => {
-      fetch("https://jsonplaceholder.typicode.com/users")
-        .then((res) => res.json())
-        .then((data) => setUsers(data));
-    };
+  const reduser = (state, action) => {
+    switch (action.type) {
+      case "INCREMENT":
+        return { count: state.count + 1 };
 
-    getUsers();
-  }, []);
+      case "DECREMENT":
+        return { count: state.count - 1 };
 
-  return <div className="App">
-	  {users.map((user) => (
-	<div key={user.id}>
-		<p>{user.name}</p>
-		<p>{user.username}</p>
-	</div>
-	))}
-  </div>;
+      default:
+        return { count: state.count };
+    }
+  };
+
+  const [state, dispatch] = useReducer(reduser, initialState);
+
+  const handleIncrement = () => {
+    dispatch({ type: "INCREMENT" });
+  };
+
+  const handleDecrement = () => {
+    dispatch({ type: "DECREMENT" });
+  };
+
+
+
+  return (
+    <div>
+      <h1>count: {state.count}</h1>
+      <button onClick={handleIncrement}>Increment</button>
+      <button onClick={handleDecrement}>Decrement</button>
+    </div>
+  );
 };
 
 export default App;
